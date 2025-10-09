@@ -27,7 +27,7 @@ class FlightSearch:
         # Iterating through each 'row' in sheet data, which is a dictionary of details about each city
         for row in self.sheet_data:
             # Mapping the name of each row to it's city
-            city = row['city']
+            city = row['City']
 
             params = {
                 'keyword': {city},
@@ -43,3 +43,52 @@ class FlightSearch:
             city_code_map[city] = iata_code
 
         return city_code_map
+
+    def get_price(self, cheapest_flight_url):
+        """
+        This method is meant to get the cheapest return flight to a particular location listed in the Google Sheet, with
+        the specific departure and return dates given.
+
+        :param cheapest_flight_url:
+        :return:
+        """
+
+        today = datetime.now()
+
+        # Departure window
+        tomorrow = today + timedelta(days=1)
+
+        # Return date
+        days_after = tomorrow + timedelta(days=14)
+
+        departure_date = tomorrow.strftime("%Y-%m-%d")
+        return_date = days_after.strftime("%Y-%m-%d")
+
+        flights = {}
+        # Iterating through each 'row' in sheet data, which is a dictionary of details about each city
+        for row in self.sheet_data:
+            # Mapping the name of each row to it's city
+            iataCode = row['IATA Code']
+            maxPrice = row['Lowest Price']
+
+            params = {
+                "originLocationCode": "LON",
+                "destinationLocationCode": iataCode,
+                "departureDate": departure_date,
+                "returnDate": return_date,
+                "adults": 1,
+                "currencyCode": "GBP",
+                "maxPrice": 1000,
+                "nonStop": 'true',
+                "max": 10
+            }
+
+            header = {'Authorization': f'Bearer {self.auth_token}'}
+            flight = requests.get(url=cheapest_flight_url, headers=header, params=params)
+            flight_data = flight.json()
+            city = iataCode
+
+            flights[city] = flight_data
+            print(flight.status_code)
+
+        return flights

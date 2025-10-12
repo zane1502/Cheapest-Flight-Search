@@ -398,7 +398,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Your Name - [@yourhandle](https://twitter.com/yourhandle) - your.email@example.com
 
-Project Link: [https://github.com/yourusername/Cheapest-Flight-search](https://github.com/yourusername/Cheapest-Flight-search)
+Project Link: [https://github.com/zane1502/Cheapest-Flight-Search](https://github.com/zane1502/Cheapest-Flight-search)
 
 ---
 

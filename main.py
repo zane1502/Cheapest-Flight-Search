@@ -4,7 +4,7 @@ import os
 from data_manager import DataManager
 from flight_search import FlightSearch
 from flight_data import FlightData
-from twilio.rest import Client
+from notification_manager import NotificationManager
 
 # APIs, Keys and secrets
 SHEET_DB_ENDPOINT = "https://sheetdb.io/api/v1/ishy23zt006uy"
@@ -17,7 +17,8 @@ SHEET_DB_AUTH_TOKEN = os.environ.get('sheet_db_auth_token')
 TWILIO_SID = os.environ.get('twilio_sid')
 TWILIO_AUTH_TOKEN = os.environ.get('twilio_auth_token')
 TWILIO_PHONE = os.environ.get('twilio_phone')
-
+RECIPIENT_PHONE = os.environ.get('my_whatsapp_number')
+print(AMADEUS_API_KEY, AMADEUS_API_SECRET, SHEET_DB_AUTH_TOKEN, TWILIO_AUTH_TOKEN, TWILIO_SID, TWILIO_PHONE, RECIPIENT_PHONE)
 # Authorization credentials
 grant_type = 'client_credentials'
 client_data = {
@@ -40,20 +41,12 @@ print(cheapest_flights)
 #Getting the city name and codes as dictionaries
 cities = searches.get_iata_code(url= AMADEUS_CITIES_URL)
 
-twilio_client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
 
-for city, iata_code in cities.items():
-    for row in cheapest_flights:
-        if row['iata'] and iata_code == row['iata']:
-            city_name = city
+notification_manager = NotificationManager(twilio_sid= TWILIO_SID,
+                                           twilio_phone= TWILIO_PHONE,
+                                           twilio_auth_token= TWILIO_AUTH_TOKEN,
+                                           cities= cities,
+                                           cheapest_flights= cheapest_flights,
+                                           )
 
-            message = f"Flight update!\nRound trip from London to {city_name}.\n"
-            message += f"Flight Departure from {row['departure_date']} by {row['departure_time']}.\n"
-            message += f"Return from {row['return_date']} by {row['return_time']}.\n"
-            message += f"Price: {row['currency']}{row['least_price']}.\n"
-
-            print(message)
-
-            send = twilio_client.messages.create(from_= f"whatsapp:{TWILIO_PHONE}",
-                                                 to= f"whatsapp:+2348054754075",
-                                                 body=message)
+send_all = notification_manager.send_message(RECIPIENT_PHONE)

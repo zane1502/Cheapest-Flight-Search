@@ -1,0 +1,95 @@
+Index: README.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># ✈\uFE0F Cheapest Flight Search & Alert System\r\n\r\nA Python-based flight monitoring application that automatically searches for the cheapest round-trip flights from London to various destinations and sends real-time WhatsApp notifications when deals are found.\r\n\r\n## \uD83D\uDCCB Table of Contents\r\n\r\n- [Overview](#overview)\r\n- [Features](#features)\r\n- [How It Works](#how-it-works)\r\n- [Prerequisites](#prerequisites)\r\n- [Installation](#installation)\r\n- [Configuration](#configuration)\r\n- [Usage](#usage)\r\n- [Project Structure](#project-structure)\r\n- [API Documentation](#api-documentation)\r\n- [Results](#results)\r\n- [Future Enhancements](#future-enhancements)\r\n- [Troubleshooting](#troubleshooting)\r\n- [Contributing](#contributing)\r\n- [License](#license)\r\n\r\n## \uD83C\uDFAF Overview\r\n\r\nThis application monitors flight prices from London to multiple destinations stored in a Google Sheet (via SheetDB). It uses the Amadeus Flight API to fetch real-time pricing data and automatically sends WhatsApp notifications via Twilio when affordable flight options are available.\r\n\r\n**Perfect for:**\r\n- Budget travelers looking for flight deals\r\n- Travel enthusiasts who want automated price monitoring\r\n- Anyone planning trips to multiple destinations\r\n\r\n## ✨ Features\r\n\r\n- **Automated IATA Code Lookup**: Automatically retrieves and stores airport codes for cities\r\n- **Real-time Flight Price Monitoring**: Searches for the cheapest round-trip flights within a 14-day window\r\n- **Smart Price Comparison**: Compares current prices against historical lowest prices\r\n- **WhatsApp Notifications**: Sends instant alerts with flight details including:\r\n  - Departure and return dates/times\r\n  - Flight prices in GBP\r\n  - Destination information\r\n- **Google Sheets Integration**: Stores and manages destination data in a cloud spreadsheet\r\n- **Flexible Date Search**: Automatically searches flights departing tomorrow with 14-day stays\r\n\r\n## \uD83D\uDD04 How It Works\r\n\r\n1. **Data Retrieval**: Fetches destination cities and target prices from Google Sheet via SheetDB API\r\n2. **IATA Code Resolution**: Converts city names to standard airport codes using Amadeus Cities API\r\n3. **Flight Search**: Queries Amadeus Flight API for the cheapest round-trip flights from London\r\n4. **Price Analysis**: Compares found flights against historical lowest prices\r\n5. **Notification**: Sends WhatsApp messages via Twilio for viable flight options\r\n\r\n## \uD83D\uDCE6 Prerequisites\r\n\r\nBefore you begin, ensure you have the following:\r\n\r\n- **Python 3.8+** installed on your system\r\n- **API Accounts**:\r\n  - [Amadeus for Developers](https://developers.amadeus.com/) (Free tier available)\r\n  - [SheetDB](https://sheetdb.io/) account with a configured Google Sheet\r\n  - [Twilio](https://www.twilio.com/) account with WhatsApp sandbox enabled\r\n- **Google Sheet** with the following columns:\r\n  - `City`: Destination city name\r\n  - `IATA Code`: Airport code (auto-populated by the script)\r\n  - `Lowest Price`: Target maximum price in GBP\r\n\r\n## \uD83D\uDE80 Installation\r\n\r\n### 1. Clone the Repository\r\n\r\n```bash\r\ngit clone https://github.com/zane1502/Cheapest-Flight-search.git\r\ncd Cheapest-Flight-search\r\n```\r\n\r\n### 2. Create Virtual Environment (Recommended)\r\n\r\n```bash\r\n# Windows\r\npython -m venv venv\r\nvenv\\Scripts\\activate\r\n\r\n# macOS/Linux\r\npython3 -m venv venv\r\nsource venv/bin/activate\r\n```\r\n\r\n### 3. Install Required Packages\r\n\r\n```bash\r\npip install requests twilio\r\n```\r\n\r\n**Required Libraries:**\r\n- `requests`: For making HTTP API calls\r\n- `twilio`: For sending WhatsApp notifications\r\n\r\n## ⚙\uFE0F Configuration\r\n\r\n### 1. Set Up Google Sheet\r\n\r\nCreate a Google Sheet with the following structure:\r\n\r\n| City | IATA Code | Lowest Price |\r\n|------|-----------|--------------|\r\n| Paris | | 50 |\r\n| Berlin | | 60 |\r\n| Rome | | 70 |\r\n\r\n> **Note**: Leave IATA Code column empty - it will be auto-populated\r\n\r\n### 2. Configure SheetDB\r\n\r\n1. Go to [SheetDB.io](https://sheetdb.io/)\r\n2. Connect your Google Sheet\r\n3. Copy your API endpoint URL\r\n4. Generate an authentication token\r\n\r\n### 3. Set Up Amadeus API\r\n\r\n1. Register at [Amadeus for Developers](https://developers.amadeus.com/)\r\n2. Create a new app in your dashboard\r\n3. Copy your API Key and API Secret\r\n4. Note: Use the **test environment** endpoints\r\n\r\n### 4. Configure Twilio WhatsApp\r\n\r\n1. Create a [Twilio account](https://www.twilio.com/try-twilio)\r\n2. Set up WhatsApp sandbox:\r\n   - Go to Messaging → Try it out → Send a WhatsApp message\r\n   - Follow instructions to join your sandbox\r\n3. Copy your Account SID, Auth Token, and Twilio phone number\r\n\r\n### 5. Environment Variables\r\n\r\nCreate environment variables for your credentials:\r\n\r\n**Windows (Command Prompt):**\r\n```cmd\r\nset amadeus_api_key=YOUR_AMADEUS_API_KEY\r\nset amadeus_api_secret=YOUR_AMADEUS_API_SECRET\r\nset sheet_db_auth_token=YOUR_SHEETDB_TOKEN\r\nset twilio_sid=YOUR_TWILIO_ACCOUNT_SID\r\nset twilio_auth_token=YOUR_TWILIO_AUTH_TOKEN\r\nset twilio_phone=YOUR_TWILIO_PHONE_NUMBER\r\n```\r\n\r\n**macOS/Linux (Terminal):**\r\n```bash\r\nexport amadeus_api_key=\"YOUR_AMADEUS_API_KEY\"\r\nexport amadeus_api_secret=\"YOUR_AMADEUS_API_SECRET\"\r\nexport sheet_db_auth_token=\"YOUR_SHEETDB_TOKEN\"\r\nexport twilio_sid=\"YOUR_TWILIO_ACCOUNT_SID\"\r\nexport twilio_auth_token=\"YOUR_TWILIO_AUTH_TOKEN\"\r\nexport twilio_phone=\"YOUR_TWILIO_PHONE_NUMBER\"\r\n```\r\n\r\n**For Permanent Setup**, add these to:\r\n- Windows: System Environment Variables\r\n- macOS/Linux: `~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`\r\n\r\n### 6. Update Phone Number\r\n\r\nIn `main.py`, update the recipient phone number:\r\n\r\n```python\r\nsend = twilio_client.messages.create(\r\n    from_=f\"whatsapp:{TWILIO_PHONE}\",\r\n    to=f\"whatsapp:YOUR_PHONE_NUMBER\",  # Change this\r\n    body=message\r\n)\r\n```\r\n\r\n## \uD83C\uDFAE Usage\r\n\r\n### Run the Application\r\n\r\n```bash\r\npython main.py\r\n```\r\n\r\n### What Happens:\r\n\r\n1. Script retrieves destinations from Google Sheet\r\n2. Fetches IATA codes for each city\r\n3. Searches for cheapest flights departing tomorrow (14-day return)\r\n4. Analyzes and compares prices\r\n5. Sends WhatsApp notifications for all found flights\r\n\r\n### Expected Console Output:\r\n\r\n```\r\nParis, CDG\r\nBerlin, BER\r\nRome, FCO\r\n200\r\n200\r\n200\r\n[{'iata': 'CDG', 'least_price': 45.99, 'currency': 'GBP', ...}, ...]\r\nFlight update!\r\nRound trip from London to Paris.\r\n...\r\n```\r\n\r\n## \uD83D\uDCC1 Project Structure\r\n\r\n```\r\nCheapest-Flight-search/\r\n│\r\n├── main.py                    # Main execution script\r\n├── data_manager.py            # Handles Google Sheet operations\r\n├── flight_search.py           # Amadeus API integration\r\n├── flight_data.py             # Flight data processing and analysis\r\n├── notification_manager.py    # (Placeholder) Notification handling\r\n├── test_sheetsDB.py          # Testing script for SheetDB integration\r\n│\r\n├── .idea/                     # PyCharm IDE configuration\r\n│   ├── dictionaries/\r\n│   ├── misc.xml\r\n│   └── workspace.xml\r\n│\r\n└── README.md                  # This file\r\n```\r\n\r\n### Module Descriptions\r\n\r\n**`main.py`**\r\n- Orchestrates the entire workflow\r\n- Handles API authentication\r\n- Coordinates between all modules\r\n- Sends WhatsApp notifications\r\n\r\n**`data_manager.py`**\r\n- Manages Google Sheet data via SheetDB API\r\n- Retrieves destination information\r\n- Updates IATA codes in the sheet\r\n\r\n**`flight_search.py`**\r\n- Interfaces with Amadeus Flight Search API\r\n- Fetches IATA codes for cities\r\n- Retrieves flight pricing data\r\n- Handles date calculations for search windows\r\n\r\n**`flight_data.py`**\r\n- Processes raw flight data from API\r\n- Identifies cheapest flight options\r\n- Structures data for easy consumption\r\n- Extracts departure/return information\r\n\r\n**`notification_manager.py`**\r\n- Placeholder for future notification enhancements\r\n- Could handle multiple notification channels\r\n\r\n## \uD83D\uDCDA API Documentation\r\n\r\n### Amadeus API\r\n\r\n**Endpoints Used:**\r\n- **OAuth Token**: `POST /v1/security/oauth2/token`\r\n- **City Search**: `GET /v1/reference-data/locations/cities`\r\n- **Flight Offers**: `GET /v2/shopping/flight-offers`\r\n\r\n**Rate Limits (Free Tier):**\r\n- 2,000 calls per month\r\n- 10 calls per second\r\n\r\n[Amadeus API Documentation](https://developers.amadeus.com/self-service)\r\n\r\n### SheetDB API\r\n\r\n**Endpoints Used:**\r\n- **GET**: Retrieve all sheet data\r\n- **PUT**: Update specific rows\r\n\r\n[SheetDB Documentation](https://docs.sheetdb.io/)\r\n\r\n### Twilio API\r\n\r\n**Service Used:**\r\n- WhatsApp Business API (Sandbox mode)\r\n\r\n[Twilio WhatsApp Documentation](https://www.twilio.com/docs/whatsapp)\r\n\r\n## \uD83D\uDCF1 Results\r\n\r\n### Sample WhatsApp Notification\r\n\r\n![WhatsApp Notification Sample](./screenshots/whatsapp-notification.png)\r\n\r\n```\r\nFlight update!\r\nRound trip from London to Paris.\r\nFlight Departure from 2025-10-13 by 08:30:00.\r\nReturn from 2025-10-27 by 19:45:00.\r\nPrice: GBP45.99.\r\n```\r\n\r\n### Google Sheet (Before & After)\r\n\r\n**Before Running Script:**\r\n| City | IATA Code | Lowest Price |\r\n|------|-----------|--------------|\r\n| Paris | | 50 |\r\n| Berlin | | 60 |\r\n\r\n**After Running Script:**\r\n| City | IATA Code | Lowest Price |\r\n|------|-----------|--------------|\r\n| Paris | CDG | 50 |\r\n| Berlin | BER | 60 |\r\n\r\n### Console Output Example\r\n\r\n```\r\nParis, CDG\r\nBerlin, BER\r\nRome, FCO\r\nAmsterdam, AMS\r\n200\r\n200\r\n200\r\n200\r\n[\r\n  {'iata': 'CDG', 'least_price': 45.99, 'currency': 'GBP', \r\n   'departure_date': '2025-10-13', 'departure_time': '08:30:00',\r\n   'return_date': '2025-10-27', 'return_time': '19:45:00'},\r\n  ...\r\n]\r\n```\r\n\r\n## \uD83D\uDE80 Future Enhancements\r\n\r\n- [ ] **Email Notifications**: Add email support alongside WhatsApp\r\n- [ ] **Price History Tracking**: Monitor price trends over time\r\n- [ ] **Multi-origin Support**: Search from multiple departure cities\r\n- [ ] **Flexible Date Ranges**: Allow custom date ranges\r\n- [ ] **Web Dashboard**: Create a web interface for monitoring\r\n- [ ] **Database Integration**: Replace Google Sheets with proper database\r\n- [ ] **Scheduling**: Add automated daily/weekly runs\r\n- [ ] **Multiple Stops**: Support flights with layovers\r\n- [ ] **Price Threshold Alerts**: Only notify when below target price\r\n- [ ] **User Management**: Support multiple users with different preferences\r\n\r\n## \uD83D\uDD27 Troubleshooting\r\n\r\n### Common Issues\r\n\r\n**Problem**: `KeyError: 'access_token'`\r\n- **Solution**: Check Amadeus API credentials are correct\r\n- Verify you're using the test environment endpoints\r\n\r\n**Problem**: `401 Unauthorized` from SheetDB\r\n- **Solution**: Verify your SheetDB auth token\r\n- Ensure the sheet URL is correct\r\n\r\n**Problem**: No WhatsApp messages received\r\n- **Solution**: Confirm you've joined the Twilio sandbox\r\n- Check the recipient phone number format (+country code)\r\n- Verify Twilio credentials\r\n\r\n**Problem**: `IndexError: list index out of range`\r\n- **Solution**: Amadeus API may not have found flights\r\n- Check IATA codes are correct\r\n- Try increasing `maxPrice` parameter\r\n\r\n**Problem**: Script runs but no flights found\r\n- **Solution**: Flight availability changes daily\r\n- Try different date ranges\r\n- Increase `maxPrice` limit\r\n- Check if `nonStop` requirement is too restrictive\r\n\r\n## \uD83E\uDD1D Contributing\r\n\r\nContributions are welcome! Here's how you can help:\r\n\r\n1. Fork the repository\r\n2. Create a feature branch (`git checkout -b feature/AmazingFeature`)\r\n3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)\r\n4. Push to the branch (`git push origin feature/AmazingFeature`)\r\n5. Open a Pull Request\r\n\r\n### Guidelines\r\n\r\n- Follow PEP 8 style guide\r\n- Add comments for complex logic\r\n- Update README for new features\r\n- Test thoroughly before submitting\r\n\r\n## \uD83D\uDCC4 License\r\n\r\nThis project is licensed under the MIT License - see the LICENSE file for details.\r\n\r\n## \uD83D\uDC4F Acknowledgments\r\n\r\n- [Amadeus for Developers](https://developers.amadeus.com/) for the flight search API\r\n- [SheetDB](https://sheetdb.io/) for Google Sheets API integration\r\n- [Twilio](https://www.twilio.com/) for WhatsApp messaging service\r\n\r\n## \uD83D\uDCE7 Contact\r\n\r\nYour Name - [@yourhandle](https://twitter.com/yourhandle) - your.email@example.com\r\n\r\nProject Link: [https://github.com/zane1502/Cheapest-Flight-Search](https://github.com/zane1502/Cheapest-Flight-search)\r\n\r\n---\r\n\r\n**Note**: Remember to add your actual screenshots to a `screenshots/` folder in your repository and update the image paths in this README accordingly.
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/README.md b/README.md
+--- a/README.md	(revision 4b1a842219512f8889948afc37ffbc34eddbaaf7)
++++ b/README.md	(date 1760230679830)
+@@ -396,10 +396,10 @@
+ 
+ ## 📧 Contact
+ 
+-Your Name - [@yourhandle](https://twitter.com/yourhandle) - your.email@example.com
++Sam - [@yourhandle](https://twitter.com/yourhandle) - samuel.e.achilike@gmail.com
+ 
+ Project Link: [https://github.com/zane1502/Cheapest-Flight-Search](https://github.com/zane1502/Cheapest-Flight-search)
+ 
+ ---
+ 
+-**Note**: Remember to add your actual screenshots to a `screenshots/` folder in your repository and update the image paths in this README accordingly.
+\ No newline at end of file
++**Note**: Remember to add your actual screenshots to a `screenshots/` folder in your repository and update the image paths in this README accordingly.
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#This file will need to use the DataManager,FlightSearch, FlightData, NotificationManager classes to achieve the program requirements.\r\n\r\nimport requests\r\nfrom data_manager import DataManager\r\nfrom flight_search import FlightSearch\r\n\r\n# APIs, Keys and secrets\r\nSHEET_DB_ENDPOINT = \"https://sheetdb.io/api/v1/ishy23zt006uy\"\r\nAMADEUS_CITIES_URL = 'https://test.api.amadeus.com/v1/reference-data/locations/cities'\r\nAMADEUS_FLIGHT_PRICES = 'https://test.api.amadeus.com/v2/shopping/flight-offers'\r\nAMADEUS_API_KEY = 'kIOt0ww30zdmV4Xk6hkQ2hHVaqzkzbJS'\r\nAMADEUS_API_SECRET = 'OSUVGAihIZFqucb8'\r\nAMADEUS_OAUTH_URL = 'https://test.api.amadeus.com/v1/security/oauth2/token'\r\nSHEET_DB_AUTH_TOKEN = \"py8y7l9tpwxnaizap733qbha7v7efozd0ypjyvkk\"\r\n\r\n# Authorization credentials\r\ngrant_type = 'client_credentials'\r\nclient_data = {\r\n        'client_id' : AMADEUS_API_KEY,\r\n        'client_secret': AMADEUS_API_SECRET,\r\n        'grant_type': grant_type\r\n    }\r\nauth_response = requests.post(url=AMADEUS_OAUTH_URL, data= client_data)\r\namadeus_auth_token = auth_response.json()['access_token']\r\n\r\nsheet = DataManager(SHEET_DB_ENDPOINT, SHEET_DB_AUTH_TOKEN)\r\nsheet_data = sheet.sheet_data\r\nsearches = FlightSearch(sheet_data= sheet_data, auth_token=amadeus_auth_token)\r\n\r\n#city_code_map = searches.get_iata_code(url= AMADEUS_CITIES_URL)\r\n\r\nflight_prices = searches.get_price(cheapest_flight_url=AMADEUS_FLIGHT_PRICES)\r\nprint(flight_prices)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision 053a62a31adb24df5660e395f546a95681ae4127)
++++ b/main.py	(date 1760229614413)
+@@ -1,17 +1,22 @@
+ #This file will need to use the DataManager,FlightSearch, FlightData, NotificationManager classes to achieve the program requirements.
+-
+ import requests
++import os
+ from data_manager import DataManager
+ from flight_search import FlightSearch
++from flight_data import FlightData
++from twilio.rest import Client
+ 
+ # APIs, Keys and secrets
+ SHEET_DB_ENDPOINT = "https://sheetdb.io/api/v1/ishy23zt006uy"
+ AMADEUS_CITIES_URL = 'https://test.api.amadeus.com/v1/reference-data/locations/cities'
+ AMADEUS_FLIGHT_PRICES = 'https://test.api.amadeus.com/v2/shopping/flight-offers'
+-AMADEUS_API_KEY = 'kIOt0ww30zdmV4Xk6hkQ2hHVaqzkzbJS'
+-AMADEUS_API_SECRET = 'OSUVGAihIZFqucb8'
++AMADEUS_API_KEY = os.environ.get('amadeus_api_key')
++AMADEUS_API_SECRET = os.environ.get('amadeus_api_secret')
+ AMADEUS_OAUTH_URL = 'https://test.api.amadeus.com/v1/security/oauth2/token'
+-SHEET_DB_AUTH_TOKEN = "py8y7l9tpwxnaizap733qbha7v7efozd0ypjyvkk"
++SHEET_DB_AUTH_TOKEN = os.environ.get('sheet_db_auth_token')
++TWILIO_SID = os.environ.get('twilio_sid')
++TWILIO_AUTH_TOKEN = os.environ.get('twilio_auth_token')
++TWILIO_PHONE = os.environ.get('twilio_phone')
+ 
+ # Authorization credentials
+ grant_type = 'client_credentials'
+@@ -27,7 +32,28 @@
+ sheet_data = sheet.sheet_data
+ searches = FlightSearch(sheet_data= sheet_data, auth_token=amadeus_auth_token)
+ 
+-#city_code_map = searches.get_iata_code(url= AMADEUS_CITIES_URL)
+-
+ flight_prices = searches.get_price(cheapest_flight_url=AMADEUS_FLIGHT_PRICES)
+-print(flight_prices)
+\ No newline at end of file
++
++cheapest_flights = FlightData(flight_prices= flight_prices).get_cheapest_flights()
++print(cheapest_flights)
++
++#Getting the city name and codes as dictionaries
++cities = searches.get_iata_code(url= AMADEUS_CITIES_URL)
++
++twilio_client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
++
++for city, iata_code in cities.items():
++    for row in cheapest_flights:
++        if row['iata'] and iata_code == row['iata']:
++            city_name = city
++
++            message = f"Flight update!\nRound trip from London to {city_name}.\n"
++            message += f"Flight Departure from {row['departure_date']} by {row['departure_time']}.\n"
++            message += f"Return from {row['return_date']} by {row['return_time']}.\n"
++            message += f"Price: {row['currency']}{row['least_price']}.\n"
++
++            print(message)
++
++            send = twilio_client.messages.create(from_= f"whatsapp:{TWILIO_PHONE}",
++                                                 to= f"whatsapp:+2348054754075",
++                                                 body=message)
+\ No newline at end of file

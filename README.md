@@ -162,11 +162,14 @@ export twilio_phone="YOUR_TWILIO_PHONE_NUMBER"
 In `main.py`, update the recipient phone number:
 
 ```python
-send = twilio_client.messages.create(
-    from_=f"whatsapp:{TWILIO_PHONE}",
-    to=f"whatsapp:YOUR_PHONE_NUMBER",  # Change this
-    body=message
-)
+notification_manager = NotificationManager(twilio_sid= TWILIO_SID,
+                                           twilio_phone= TWILIO_PHONE,
+                                           twilio_auth_token= TWILIO_AUTH_TOKEN,
+                                           cities= cities,
+                                           cheapest_flights= cheapest_flights,
+                                           )
+
+send_all = notification_manager.send_message(RECIPIENT_PHONE)
 ```
 
 ## 🎮 Usage
@@ -283,7 +286,7 @@ Cheapest-Flight-search/
 
 ### Sample WhatsApp Notification
 
-![WhatsApp Notification Sample](./screenshots/whatsapp-notification.png)
+![WhatsApp Notification Sample](./flight_notification_screenshot.png.jpg)
 
 ```
 Flight update!

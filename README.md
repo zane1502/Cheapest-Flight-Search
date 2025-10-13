@@ -3,7 +3,6 @@
 A Python-based flight monitoring application that automatically searches for the cheapest round-trip flights from London to various destinations and sends real-time WhatsApp notifications when deals are found.
 
 ## 📋 Table of Contents
-
 - [Overview](#overview)
 - [Features](#features)
 - [How It Works](#how-it-works)
@@ -43,7 +42,7 @@ This application monitors flight prices from London to multiple destinations sto
 ## 🔄 How It Works
 
 1. **Data Retrieval**: Fetches destination cities and target prices from Google Sheet via SheetDB API
-2. **IATA Code Resolution**: Converts city names to standard airport codes using Amadeus Cities API
+2. **IATA Code Resolution**: Converts city names to standard IATA city codes using Amadeus Cities API
 3. **Flight Search**: Queries Amadeus Flight API for the cheapest round-trip flights from London
 4. **Price Analysis**: Compares found flights against historical lowest prices
 5. **Notification**: Sends WhatsApp messages via Twilio for viable flight options
@@ -387,22 +386,18 @@ Contributions are welcome! Here's how you can help:
 - Update README for new features
 - Test thoroughly before submitting
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 👏 Acknowledgments
 
 - [Amadeus for Developers](https://developers.amadeus.com/) for the flight search API
 - [SheetDB](https://sheetdb.io/) for Google Sheets API integration
 - [Twilio](https://www.twilio.com/) for WhatsApp messaging service
+- And ofcourse my very good friends, ChatGPT & Claude.ai
 
 ## 📧 Contact
 
-Your Name - [@yourhandle](https://twitter.com/yourhandle) - your.email@example.com
+Samuel Achilike - samuel.e.achilike@gmail.com
 
 Project Link: [https://github.com/zane1502/Cheapest-Flight-Search](https://github.com/zane1502/Cheapest-Flight-search)
 
 ---
-
-**Note**: Remember to add your actual screenshots to a `screenshots/` folder in your repository and update the image paths in this README accordingly.

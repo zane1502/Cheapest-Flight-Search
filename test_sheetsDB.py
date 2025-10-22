@@ -30,7 +30,10 @@ if email == email_confirm:
     }
     params = {'sheet': 'users'}
 
-    enter_details = requests.post(url=SHEET_DB_ENDPOINT, params= params, headers= sheet_db_header, data= json.dumps(payload))
+    enter_details = requests.post(url=SHEET_DB_ENDPOINT,
+                                  params= params,
+                                  headers= sheet_db_header,
+                                  data= json.dumps(payload))
 
     if enter_details.status_code == 201:
         print("You're in the club!")

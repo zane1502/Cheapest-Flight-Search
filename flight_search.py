@@ -1,4 +1,4 @@
-import requests
+import requests, os
 from datetime import datetime, timedelta
 
 class FlightSearch:
@@ -78,7 +78,7 @@ class FlightSearch:
                 "returnDate": return_date,
                 "adults": 1,
                 "currencyCode": "GBP",
-                "maxPrice": 1000,
+                "maxPrice": maxPrice,
                 "nonStop": 'true',
                 "max": 10
             }

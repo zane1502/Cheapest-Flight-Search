@@ -1,4 +1,5 @@
-import requests, json
+import requests, json, smtplib
+from email.message import EmailMessage
 
 # ------- SheetDB -------
 APP_ID = "ishy23zt006uy"
@@ -30,7 +31,7 @@ if email == email_confirm:
     }
     params = {'sheet': 'users'}
 
-    enter_details = requests.post(url=SHEET_DB_ENDPOINT,
+    enter_details = requests.post(url= SHEET_DB_ENDPOINT,
                                   params= params,
                                   headers= sheet_db_header,
                                   data= json.dumps(payload))
@@ -40,28 +41,17 @@ if email == email_confirm:
     else:
         print(f"Error: {enter_details.status_code} -> {enter_details.text}")
 
-    get_data = requests.get(url= SHEET_DB_ENDPOINT, headers=sheet_db_header, params= params)
+    get_data = requests.get(url= SHEET_DB_ENDPOINT,
+                            headers=sheet_db_header,
+                            params= params)
     json_data = get_data.json()
 
+    print(json_data)
 
+    sender_email = "samuel.e.achilike@gmail.com"
+    password = "my_password"
 
-# for i in range(len(json_data)):
-#     city_name = json_data[i]['City']
-#     lowest_price = json_data[i]['Lowest Price']
-#
-#     param = {'keyword':city_name,
-#              'max': 1}
-#
-#     city_data = requests.get(url=f'{AMADEUS_CITIES_URL}', params= param, headers=header)
-#     iata_code = city_data.json()['data'][0]['iataCode']
-#     data = [{
-#         'City': city_name,
-#         'IATA Code': iata_code,
-#         'Lowest Price': lowest_price
-#     }]
-#
-#     put_IATA_CODE = requests.put(url=f'{SHEET_DB_ENDPOINT}/City/{city_name}', headers= sheet_db_header, json= data)
-#     print(put_IATA_CODE.status_code)
-#
-# # new_entry = requests.put(url= f"{SHEET_DB_ENDPOINT}/id/5", headers=header, json=data)
-# # print(new_entry.status_code)
+    smtp_server = "smtp.gmail.com"
+    smt_port = 587
+
+    subject = "Cheapest Flight Notifications"

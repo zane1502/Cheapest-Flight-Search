@@ -1,6 +1,7 @@
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
-
+import smtplib, ssl
+from email.message import EmailMessage
 
 class NotificationManager:
     """This class is responsible for sending notifications with the deal flight details."""
@@ -13,7 +14,6 @@ class NotificationManager:
         :param twilio_auth_token: Twilio Auth Token
         :param cities: Dictionary mapping city names to IATA codes
         :param cheapest_flights: List of dictionaries containing flight information
-        :param twilio_phone: Twilio WhatsApp phone number
         """
         self.twilio_sid = twilio_sid
         self.twilio_auth_token = twilio_auth_token
@@ -21,7 +21,7 @@ class NotificationManager:
         self.cheapest_flights = cheapest_flights
         self.twilio_phone = twilio_phone
 
-    def send_message(self, recipient_phone):
+    def send_whatsapp_message(self, recipient_phone):
         """
         Send WhatsApp messages for all matching flight deals.
 
@@ -74,6 +74,7 @@ class NotificationManager:
                             body=message
                         )
 
+
                         # Check message status
                         if send.status in ['queued', 'sent', 'delivered']:
                             results['successful'] += 1
@@ -118,54 +119,46 @@ class NotificationManager:
 
         return results
 
-    def send_single_message(self, recipient_phone, city_name, flight_info):
+    def send_email(self, users_emails):
         """
-        Send a single WhatsApp message for a specific flight.
+        Send emails for all matching flight deals.
 
-        :param recipient_phone: Recipient's phone number
-        :param city_name: Name of the destination city
-        :param flight_info: Dictionary containing flight details
-        :return: Tuple (success: bool, message_sid or error: str)
+        :return: Dictionary with success count, failed count, and error details
         """
-        try:
-            # Initialize Twilio client
-            twilio_client = Client(self.twilio_sid, self.twilio_auth_token)
+        for user in users_emails:
+            name = user['First Name']
+            receiver_email = user['Email']
+            sender_email = "210403053@live.unilag.edu.ng"
+            app_password = "your_app_password_here"
 
-            # Validate flight info
-            required_keys = ['departure_date', 'departure_time', 'return_date',
-                             'return_time', 'currency', 'least_price']
+            smtp_server = "smtp.office365.com"
+            smtp_port = 587  # TLS port
 
-            for key in required_keys:
-                if key not in flight_info:
-                    raise KeyError(f"Missing required field: {key}")
+            subject = "Cheapest Flights Notifications"
 
-            # Build message
-            message = f"Flight update!\nRound trip from London to {city_name}.\n"
-            message += f"Flight Departure from {flight_info['departure_date']} by {flight_info['departure_time']}.\n"
-            message += f"Return from {flight_info['return_date']} by {flight_info['return_time']}.\n"
-            message += f"Price: {flight_info['currency']}{flight_info['least_price']}.\n"
+            for city, iata_code in self.cities.items():
+                for row in self.cheapest_flights:
+                    if row.get('iata') and iata_code == row['iata']:
+                        city_name = city
+                        message = (
+                            f"Hey {name}! Here's your flight update...\n\n"
+                            f"Round trip from London to {city_name}.\n"
+                            f"Departure: {row['departure_date']} at {row['departure_time']}.\n"
+                            f"Return: {row['return_date']} at {row['return_time']}.\n"
+                            f"Price: {row['currency']}{row['least_price']}.\n"
+                        )
 
-            # Send message
-            send = twilio_client.messages.create(
-                from_=f"whatsapp:{self.twilio_phone}",
-                to=f"whatsapp:{recipient_phone}",
-                body=message
-            )
+                        print(f"Sending message for {city_name}...")
 
-            print(f"✓ Message sent successfully (SID: {send.sid})")
-            return True, send.sid
+                        send_message = EmailMessage()
+                        send_message["From"] = sender_email
+                        send_message["To"] = receiver_email
+                        send_message["Subject"] = subject
+                        send_message.set_content(message)
 
-        except TwilioRestException as e:
-            error_msg = f"Twilio error: {e.msg} (Code: {e.code})"
-            print(f"✗ {error_msg}")
-            return False, error_msg
-
-        except KeyError as e:
-            error_msg = f"Missing data: {str(e)}"
-            print(f"✗ {error_msg}")
-            return False, error_msg
-
-        except Exception as e:
-            error_msg = f"Unexpected error: {str(e)}"
-            print(f"✗ {error_msg}")
-            return False, error_msg
+                        # Connect and send
+                        with smtplib.SMTP(smtp_server, smtp_port) as server:
+                            server.starttls()  # Upgrade to secure connection
+                            server.login(sender_email, app_password)
+                            server.send_message(send_message)
+                        print("Email sent successfully!")
